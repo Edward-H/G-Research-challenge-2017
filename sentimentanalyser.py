@@ -23,7 +23,7 @@ class SentimentAnalyser(object):
         subject = None
 
         seen_not = False
-        for word in myparser.parse(tweet,self.company_names):
+        for word in myparser.parse(tweet,self.company_names,True):
             if word == "not" or word == "don't":
                 seen_not = True
             elif word in self.positive_words:
