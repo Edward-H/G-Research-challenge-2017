@@ -45,9 +45,12 @@ class SentimentAnalyser(object):
         if seen_not:
             sentiment = -sentiment
 
-        subjects += [None, None]
+        #print((tweet, subjects, sentiment, is_comparison))
+
         if is_comparison:
+           subjects += [None, None]
            return[(subjects[0], sentiment), (subjects[1], -sentiment)]
         else:
-           return [(subjects[0], sentiment)]
+           return [(sub, sentiment) for sub in subjects]
+           
 
