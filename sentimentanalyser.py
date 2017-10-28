@@ -14,7 +14,7 @@ class SentimentAnalyser(object):
           for p in ps:
             self.product_names += [(p.name, c)]
         #print(self.product_names)
-      
+
 
     def analyse_tweet(self, tweet):
         """Analyse a tweet, extracting the subject and sentiment"""
@@ -22,7 +22,7 @@ class SentimentAnalyser(object):
         subject = None
 
         seen_not = False
-        for word in tweet.split(" "):
+        for word in parser.parse(tweet,self.company_names):
             if word == "not" or word == "don't":
                 seen_not = True
             elif word in self.positive_words:
@@ -40,5 +40,3 @@ class SentimentAnalyser(object):
         #print(tweet, subject, sentiment)
 
         return [(subject, sentiment)]
-
-
