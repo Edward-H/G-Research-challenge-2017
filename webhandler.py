@@ -58,7 +58,7 @@ def get_challenge(cid):
     """Get the details of a specific challenge"""
     data = get_json("/api/challenges/{}".format(cid))
     info_json = data["challenge"]
-    info = ChallengeInfo(info_json["id"], info_json["challengeType"], ["name"], 
+    info = ChallengeInfo(info_json["id"], info_json["challengeType"], ["name"],
                          info_json["description"])
     tweets = [Tweet(k["id"], k["time"], k["source"], k["tweet"]) for k in data["tweets"]]
     return Challenge(info, tweets)
