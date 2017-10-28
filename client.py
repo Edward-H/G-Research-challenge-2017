@@ -42,14 +42,34 @@ def handle_aggregated(challenge, analyser):
     # Just guess
     min_time = min(t.time for t in challenge.tweets)
     max_time = max(t.time for t in challenge.tweets)
-    known_subjects = ["Motionmart", "Spherebank", "Purpleworth"]
+    known_subjects = [c.name for c in webhandler.get_company_info()]
+
+    sentiments = {}
+    for subject in known_subjects:
+        sentiments[subject] = {}
 
     for subject in known_subjects:
         subject_sentiments = {}
-        for i in range(min_time, max_time):
-            subject_sentiments[i] = random.randrange(-1, 1)
+        for i in range(min_time, max_time + 1):
+            subject_sentiments[i] = 0
         sentiments[subject] = subject_sentiments
+        
+    for tweet in challenge.tweets:
+        sentiment_list = analyser.analyse_tweet(tweet.tweet)
+        for (subject, sentiment) in sentiment_list:
+            if subject != None:
+                sentiments[subject][tweet.time] += sentiment
 
+    # Normalise sentiments
+    for subject in sentiments:
+        for time in sentiments[subject]:
+            if sentiments[subject][time] < 0:
+                sentiments[subject][time] = -1
+            elif sentiments[subject][time] > 0:
+                sentiments[subject][time] = 1
+
+    # Submit results
+    print(sentiments)
     submission = {'challengeId': challenge.info.cid, 'sentiments': sentiments}
     result = webhandler.post_aggregated_submission(submission)
     print ("Mark = {}%".format(result.mark))
