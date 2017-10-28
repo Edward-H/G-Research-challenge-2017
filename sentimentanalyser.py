@@ -1,5 +1,6 @@
 """Analyse tweets"""
 import webhandler
+import myparser
 
 class SentimentAnalyser(object):
     def __init__(self):
@@ -22,7 +23,7 @@ class SentimentAnalyser(object):
         subject = None
 
         seen_not = False
-        for word in parser.parse(tweet,self.company_names):
+        for word in myparser.parse(tweet,self.company_names):
             if word == "not" or word == "don't":
                 seen_not = True
             elif word in self.positive_words:
