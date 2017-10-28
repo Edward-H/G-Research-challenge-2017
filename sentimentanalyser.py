@@ -26,7 +26,7 @@ class SentimentAnalyser(object):
             if word in self.company_names:
                 subject = word
             if seen_not:
-            sentiment = -sentiment
+                sentiment = -sentiment
 
         return [(subject or self.companies[0].name, sentiment)]
 
