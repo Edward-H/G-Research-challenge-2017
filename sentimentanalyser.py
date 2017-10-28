@@ -45,13 +45,9 @@ class SentimentAnalyser(object):
         if seen_not:
             sentiment = -sentiment
 
-        if len(subjects) == 0:
-           return [(None, sentiment)]
+        subjects += [None, None]
         if is_comparison:
-           if len(subjects) > 1:
-             return[(subjects[0], sentiment), (subjects[1], -sentiment)]
-           else: 
-             return[(None, sentiment)]
+           return[(subjects[0], sentiment), (subjects[1], -sentiment)]
         else:
            return [(subjects[0], sentiment)]
 
