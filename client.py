@@ -36,6 +36,8 @@ def handle_pertweet(challenge, analyser):
     result = webhandler.post_pertweet_submission(submission)
     print("Mark = {}%".format(result.mark))
 
+
+    
 def handle_aggregated(challenge, analyser):
     """Handle an aggregated challenge"""
     sentiments = {}
@@ -51,26 +53,41 @@ def handle_aggregated(challenge, analyser):
     for subject in known_subjects:
         subject_sentiments = {}
         for i in range(min_time, max_time + 1):
-            subject_sentiments[i] = 0
+            subject_sentiments[i] = { 'number': 0, 'sum': 0 }
         sentiments[subject] = subject_sentiments
         
     for tweet in challenge.tweets:
         sentiment_list = analyser.analyse_tweet(tweet.tweet)
         for (subject, sentiment) in sentiment_list:
             if subject != None:
-                sentiments[subject][tweet.time] += sentiment
+                sentiments[subject][tweet.time]['sum'] += sentiment
+                sentiments[subject][tweet.time]['number'] += 1
 
     # Normalise sentiments
-    for subject in sentiments:
-        for time in sentiments[subject]:
-            if sentiments[subject][time] < 0:
-                sentiments[subject][time] = -1
-            elif sentiments[subject][time] > 0:
-                sentiments[subject][time] = 1
-
+    result_sentiments = {}
+    for subject in known_subjects:
+        result_sentiments[subject] = {}
+        
+    for subject in known_subjects:
+        subject_sentiments = {}
+        # Copy stuff from previous sentiments dict.
+        for i in range(min_time, max_time + 1):
+            if sentiments[subject][i]['number'] != 0:
+                result_sentiments[subject][i] = sentiments[subject][i]['sum'] / sentiments[subject][i]['number']
+            else:
+                result_sentiments[subject][i] = 0
+        # If all entries are zero, delete this dict.
+        used = False
+        for i in range(min_time, max_time + 1):
+            if result_sentiments[subject][i] != 0:
+                used = True
+                break
+        if not used:
+            result_sentiments.pop(subject, None)
+                
     # Submit results
-    print(sentiments)
-    submission = {'challengeId': challenge.info.cid, 'sentiments': sentiments}
+    print(result_sentiments)
+    submission = {'challengeId': challenge.info.cid, 'sentiments': result_sentiments}
     result = webhandler.post_aggregated_submission(submission)
     print ("Mark = {}%".format(result.mark))
 
