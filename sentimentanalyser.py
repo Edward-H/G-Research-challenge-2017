@@ -15,12 +15,18 @@ class SentimentAnalyser(object):
         sentiment = 0
         subject = None
 
+        seen_not = False
         for word in tweet.split(" "):
-            if word in self.positive_words:
+            if word == "not":
+                seen_not = True
+            elif word in self.positive_words:
                 sentiment = sentiment + 1
-            if word in self.negative_words:
+            elif word in self.negative_words:
                 sentiment = sentiment - 1
             if word in self.company_names:
                 subject = word
+            if seen_not:
+            sentiment = -sentiment
 
         return [(subject or self.companies[0].name, sentiment)]
+
