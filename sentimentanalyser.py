@@ -41,3 +41,4 @@ class SentimentAnalyser(object):
 
         return [(subject, sentiment)]
 
+
