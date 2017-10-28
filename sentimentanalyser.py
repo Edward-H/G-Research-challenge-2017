@@ -1,5 +1,6 @@
 """Analyse tweets"""
 import webhandler
+import myparser
 
 class SentimentAnalyser(object):
     def __init__(self):
@@ -16,7 +17,7 @@ class SentimentAnalyser(object):
             self.product_names += [(p.name, c)]
         #print(self.product_names)
         self.comparisons = [("worse", -1), ("better", 1), ("prefer", 1)]
-      
+
 
     def analyse_tweet(self, tweet):
         """Analyse a tweet, extracting the subject and sentiment"""
@@ -25,7 +26,7 @@ class SentimentAnalyser(object):
 
         is_comparison = False # sentiment will be the LHS of the comparison
         seen_not = False
-        for word in tweet.split(" "):
+        for word in myparser.parse(tweet,self.company_names,True):
             if word == "not" or word == "don't":
                 seen_not = True
             elif word in self.positive_words:
@@ -53,5 +54,4 @@ class SentimentAnalyser(object):
              return[(None, sentiment)]
         else:
            return [(subjects[0], sentiment)]
-
 
